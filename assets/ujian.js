@@ -176,7 +176,7 @@
         h("li", "Jawaban tersimpan otomatis. Jika sinyal putus, jawaban disimpan di perangkat dan dikirim saat tersambung kembali. Putus sinyal tidak dihitung pelanggaran."),
         h("li", "Waktu tetap berjalan walaupun halaman tertutup. Jika waktu habis, jawaban yang tersimpan dikirim otomatis."),
         h("li", "Menyalin, menempel, dan klik kanan dinonaktifkan."),
-        h("li", "Kerjakan sendiri. Nama dan NIM Anda tampil samar di layar soal.")),
+        h("li", "Kerjakan sendiri. Nama dan NIM Anda tampil di panel samping layar ujian.")),
       h("label.baris", { for: "setuju", style: { fontWeight: 400 } }, cb, " Saya sudah membaca dan akan mematuhi tata tertib."),
       btn)));
   }
@@ -263,8 +263,12 @@
     const panel = h("aside.panel-nomor");
     const tombolKirim = h("button.bahaya", { onclick: konfirmasiKirim }, "Kirim jawaban");
 
-    const capAir = h("div.cap-air", { "aria-hidden": "true" });
-    for (let i = 0; i < 60; i++) capAir.append(h("span", sesiLokal.nim + " · " + sesiLokal.nama + " · " + sesiLokal.kode));
+    // identitas peserta di panel kanan (tanpa watermark di atas soal agar mudah dibaca)
+    const kartuIdentitas = () => h("div.kartu.identitas", { "aria-label": "Identitas peserta" },
+      h("div.kecil.redup", "Peserta"),
+      h("div.nama-peserta", sesiLokal.nama),
+      h("div", "NIM ", h("strong", sesiLokal.nim)),
+      h("div.kecil.redup", "Kode ujian " + sesiLokal.kode + (data.paket ? " · paket " + data.paket : "")));
 
     tampil(h("div.ujian-kepala", elWaktu, elNo, elPel, elSimpan, h("span", { style: { marginLeft: "auto" } }), tombolKirim),
       h("div.ujian-tata.tanpa-pilih", h("section", kotakSoal), panel));
@@ -331,7 +335,7 @@
           idx < soal.length - 1 ? h("button.utama", { onclick: () => pindah(idx + 1) }, "Berikutnya →") : h("button.bahaya", { onclick: konfirmasiKirim }, "Selesai & kirim"));
       }
 
-      kotakSoal.replaceChildren(h("div.kartu.soal-kartu", capAir,
+      kotakSoal.replaceChildren(h("div.kartu.soal-kartu",
         h("h2", "Soal " + nomor),
         gambarEl(q.gambar),
         grupOpsi(q, "tier1", "Tingkat 1 · Jawaban", q.tier1.teks),
@@ -342,7 +346,7 @@
 
     function gambarPanel() {
       if (berurutan) {
-        panel.replaceChildren(h("div.kartu", h("h3", "Kemajuan"), h("div.batang", h("span", { style: { width: Math.round((data.posisi) / total * 100) + "%" } })),
+        panel.replaceChildren(kartuIdentitas(), h("div.kartu", h("h3", "Kemajuan"), h("div.batang", h("span", { style: { width: Math.round((data.posisi) / total * 100) + "%" } })),
           h("p.kecil.redup.mt", (data.posisi) + " dari " + total + " soal sudah dilewati.")));
         return;
       }
@@ -353,7 +357,7 @@
           { onclick: () => pindah(i), "aria-label": "Soal " + q.no + (lengkap(q.id) ? ", lengkap" : sebagian(q.id) ? ", belum lengkap" : ", kosong") }, q.no));
       });
       const n = soal.filter(q => lengkap(q.id)).length;
-      panel.replaceChildren(h("div.kartu", h("h3", "Nomor soal"), grid,
+      panel.replaceChildren(kartuIdentitas(), h("div.kartu", h("h3", "Nomor soal"), grid,
         h("p.kecil.mt", n + " dari " + total + " lengkap"),
         h("div.legenda", h("span", "■ hijau: ketiga tingkat terisi"), h("span", "■ kuning: belum lengkap"), h("span", "□ garis oranye: ragu-ragu"))));
     }
