@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Masuk Ujian — CBT Three-Tier Test</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header class="kepala">
+    <div>
+      <div class="judul">CBT Three-Tier Test</div>
+      <div class="sub" id="institusi"></div>
+    </div>
+    <div class="kanan"><a class="tombol" href="dosen.html" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.35)">Halaman dosen</a></div>
+  </header>
+
+  <main class="isi sempit" id="wadah">
+    <div class="kartu">
+      <h1>Masuk ujian</h1>
+      <p class="redup">Masukkan kode ujian dari dosen, NIM, dan PIN Anda.</p>
+      <form id="formMasuk" autocomplete="off" novalidate>
+        <label for="kode">Kode ujian</label>
+        <input id="kode" class="besar" type="text" placeholder="ABC-1234" maxlength="12" required aria-describedby="bantuKode">
+        <div id="bantuKode" class="bantu">Huruf besar/kecil tidak berpengaruh.</div>
+
+        <label for="nim">NIM</label>
+        <input id="nim" type="text" inputmode="numeric" required>
+
+        <label for="pin">PIN <span class="bantu">(6 angka dari dosen)</span></label>
+        <input id="pin" type="password" inputmode="numeric" maxlength="12" required>
+
+        <div id="galat" class="kartu bahaya mt tersembunyi" role="alert"></div>
+        <button id="tombolMasuk" class="utama penuh mt" type="submit">Masuk</button>
+      </form>
+    </div>
+
+    <div class="kartu" id="lanjutkan" hidden>
+      <h3>Ada ujian yang belum selesai di perangkat ini</h3>
+      <p class="redup kecil" id="lanjutInfo"></p>
+      <div class="baris"><a class="tombol utama" href="ujian.html">Lanjutkan ujian</a></div>
+    </div>
+
+    <p class="redup kecil pusat">Gunakan Chrome, Edge, atau Firefox versi terbaru. Tutup aplikasi lain sebelum ujian.</p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/config.js"></script>
+  <script src="assets/common.js"></script>
+  <script>
+    (function () {
+      const { rpc, idPerangkat, namaPerangkat, C, cekKonfigurasi } = CBT;
+      document.getElementById("institusi").textContent = C.NAMA_INSTITUSI || "";
+      if (!cekKonfigurasi(document.getElementById("wadah"))) return;
+
+      const q = new URLSearchParams(location.search);
+      if (q.get("kode")) document.getElementById("kode").value = q.get("kode");
+
+      try {
+        const s = JSON.parse(localStorage.getItem("cbt_attempt") || "null");
+        if (s && s.token && !s.uji) {
+          document.getElementById("lanjutkan").hidden = false;
+          document.getElementById("lanjutInfo").textContent = s.nama + " (" + s.nim + ") — kode " + s.kode;
+        }
+      } catch (e) {}
+
+      const form = document.getElementById("formMasuk");
+      const galat = document.getElementById("galat");
+      const btn = document.getElementById("tombolMasuk");
+      form.addEventListener("submit", async (ev) => {
+        ev.preventDefault();
+        galat.classList.add("tersembunyi");
+        const kode = document.getElementById("kode").value.trim();
+        const nim = document.getElementById("nim").value.trim();
+        const pin = document.getElementById("pin").value.trim();
+        if (!kode || !nim || !pin) { galat.textContent = "Kode ujian, NIM, dan PIN wajib diisi."; galat.classList.remove("tersembunyi"); return; }
+        btn.disabled = true; btn.textContent = "Memeriksa...";
+        try {
+          const r = await rpc("mhs_masuk", { p_kode: kode, p_nim: nim, p_pin: pin, p_device: idPerangkat(), p_perangkat: namaPerangkat() });
+          localStorage.setItem("cbt_attempt", JSON.stringify({ token: r.token, nama: r.nama, nim: r.nim, kode: kode.toUpperCase() }));
+          location.href = "ujian.html";
+        } catch (e) {
+          galat.textContent = e.message; galat.classList.remove("tersembunyi");
+          btn.disabled = false; btn.textContent = "Masuk";
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+{
+  "materi": "Konsep Dasar IPA Fisika (contoh)",
+  "format": "three-tier-v1",
+  "tier3": {
+    "teks": "Seberapa yakin Anda dengan jawaban tingkat 1 dan 2?",
+    "opsi": [
+      "Tidak yakin",
+      "Yakin"
+    ]
+  },
+  "paket": [
+    {
+      "kode": "A",
+      "soal": [
+        {
+          "id": "A1",
+          "konsep": "Gaya gravitasi dan massa",
+          "tier1": {
+            "teks": "Sebuah bola besi (2 kg) dan bola plastik (0,2 kg) berukuran sama dijatuhkan bersamaan dari ketinggian 2 m. Jika hambatan udara diabaikan, bola mana yang lebih dulu sampai di lantai?",
+            "opsi": [
+              "Bola besi",
+              "Bola plastik",
+              "Keduanya bersamaan",
+              "Tergantung warna bola"
+            ],
+            "kunci": 2
+          },
+          "tier2": {
+            "teks": "Alasan jawaban Anda:",
+            "opsi": [
+              "Benda yang lebih berat selalu jatuh lebih cepat",
+              "Percepatan gravitasi sama untuk semua benda, tidak bergantung massa",
+              "Benda ringan lebih mudah bergerak sehingga lebih cepat",
+              "Gravitasi hanya bekerja pada benda logam"
+            ],
+            "kunci": 1,
+            "feedback": [
+              "Ini miskonsepsi umum: massa tidak memengaruhi percepatan jatuh bebas.",
+              "",
+              "Benda ringan tidak bergerak lebih cepat; tanpa hambatan udara percepatannya sama.",
+              "Gravitasi bekerja pada semua benda bermassa."
+            ]
+          },
+          "pembahasan": "Tanpa hambatan udara, semua benda jatuh dengan percepatan g ≈ 9,8 m/s². Waktu jatuh hanya bergantung pada ketinggian: t = √(2h/g)."
+        },
+        {
+          "id": "A2",
+          "konsep": "Gaya gesek",
+          "tier1": {
+            "teks": "Andi mendorong lemari di lantai keramik dan di lantai berkarpet dengan gaya yang sama. Di lantai mana lemari lebih mudah bergeser?",
+            "opsi": [
+              "Lantai keramik",
+              "Lantai berkarpet",
+              "Sama saja",
+              "Tidak dapat bergeser di keduanya"
+            ],
+            "kunci": 0
+          },
+          "tier2": {
+            "teks": "Alasan jawaban Anda:",
+            "opsi": [
+              "Permukaan keramik lebih licin sehingga gaya geseknya lebih kecil",
+              "Karpet lebih empuk sehingga mendorong lemari",
+              "Gaya gesek tidak bergantung pada jenis permukaan",
+              "Lantai keramik lebih dingin"
+            ],
+            "kunci": 0,
+            "feedback": [
+              "",
+              "Karpet justru memperbesar gesekan.",
+              "Gaya gesek bergantung pada kekasaran permukaan (koefisien gesek).",
+              "Suhu lantai tidak menentukan gesekan dalam kasus ini."
+            ]
+          },
+          "pembahasan": "Gaya gesek f = μN. Keramik memiliki koefisien gesek μ lebih kecil daripada karpet, sehingga gaya gesek lebih kecil dan lemari lebih mudah bergeser."
+        },
+        {
+          "id": "A3",
+          "konsep": "Bidang miring",
+          "tier1": {
+            "teks": "Perhatikan gambar. Sebuah kotak yang sama dinaikkan ke truk melalui papan P (panjang 2 m) dan papan Q (panjang 4 m) dengan ketinggian bak yang sama. Papan mana yang membutuhkan gaya dorong lebih kecil?",
+            "opsi": [
+              {
+                "teks": "Papan P (lebih pendek)"
+              },
+              {
+                "teks": "Papan Q (lebih panjang)"
+              },
+              {
+                "teks": "Sama besar"
+              },
+              {
+                "teks": "Tidak dapat ditentukan"
+              }
+            ],
+            "kunci": 1
+          },
+          "tier2": {
+            "teks": "Alasan jawaban Anda:",
+            "opsi": [
+              "Semakin panjang bidang miring, semakin kecil gaya yang diperlukan",
+              "Papan pendek lebih cepat sehingga lebih ringan",
+              "Usaha yang sama berarti gaya juga sama",
+              "Gaya bergantung pada lebar papan"
+            ],
+            "kunci": 0,
+            "feedback": [
+              "",
+              "Lebih cepat sampai tidak berarti gayanya lebih kecil.",
+              "Usaha memang sama, tetapi gaya dibagi jarak yang lebih panjang sehingga lebih kecil.",
+              "Lebar papan tidak memengaruhi gaya dorong."
+            ]
+          },
+          "pembahasan": "Pada bidang miring licin, F × s = w × h. Untuk h dan w yang sama, s lebih panjang menghasilkan F lebih kecil.",
+          "gambar": {
+            "file": "bidang-miring.png",
+            "alt": "Dua papan miring P (2 m) dan Q (4 m) menuju bak truk setinggi 1 m"
+          }
+        },
+        {
+          "id": "A4",
+          "konsep": "Perpindahan kalor",
+          "tier1": {
+            "teks": "Saat memegang sendok logam yang dicelupkan ke dalam teh panas, ujung sendok yang dipegang ikut terasa panas. Peristiwa ini adalah perpindahan kalor secara ...",
+            "opsi": [
+              "Konduksi",
+              "Konveksi",
+              "Radiasi",
+              "Evaporasi"
+            ],
+            "kunci": 0
+          },
+          "tier2": {
+            "teks": "Alasan jawaban Anda:",
+            "opsi": [
+              "Kalor berpindah melalui zat perantara tanpa disertai perpindahan partikel zat",
+              "Kalor berpindah bersama aliran zat cair",
+              "Kalor berpindah tanpa zat perantara",
+              "Kalor hilang karena penguapan"
+            ],
+            "kunci": 0,
+            "feedback": [
+              "",
+              "Itu ciri konveksi, terjadi pada zat cair/gas yang mengalir.",
+              "Itu ciri radiasi, misalnya panas matahari.",
+              "Penguapan bukan cara kalor merambat di sendok."
+            ]
+          },
+          "pembahasan": "Konduksi adalah perpindahan kalor melalui zat padat tanpa perpindahan partikel. Logam adalah konduktor yang baik."
+        },
+        {
+          "id": "A5",
+          "konsep": "Rangkaian listrik",
+          "tier1": {
+            "teks": "Dua lampu identik dipasang seri dengan sebuah baterai. Jika salah satu lampu putus, apa yang terjadi pada lampu lainnya?",
+            "opsi": [
+              "Tetap menyala lebih terang",
+              "Tetap menyala sama terang",
+              "Ikut padam",
+              "Menyala lebih redup"
+            ],
+            "kunci": 2
+          },
+          "tier2": {
+            "teks": "Alasan jawaban Anda:",
+            "opsi": [
+              "Pada rangkaian seri hanya ada satu jalur arus, sehingga arus terputus",
+              "Arus yang tadinya untuk dua lampu kini untuk satu lampu",
+              "Lampu yang tersisa mendapat tegangan penuh baterai",
+              "Baterai menjadi lemah"
+            ],
+            "kunci": 0,
+            "feedback": [
+              "",
+              "Arus tidak dapat mengalir karena jalur terputus.",
+              "Tegangan tidak dapat menghasilkan arus jika rangkaian terbuka.",
+              "Baterai tidak berubah; masalahnya rangkaian terbuka."
+            ]
+          },
+          "pembahasan": "Rangkaian seri hanya memiliki satu jalur. Jika satu lampu putus, rangkaian terbuka dan arus berhenti, sehingga semua lampu padam."
+        }
+      ]
+    },
+    {
+      "kode": "B",
+      "soal": [
+        {
+          "id": "B1",
+          "konsep": "Gaya gravitasi dan massa",
+          "tier1": {
+            "teks": "Sebuah batu dan sehelai kertas yang diremas menjadi bola kecil dijatuhkan bersamaan dari meja. Keduanya sampai di lantai hampir bersamaan. Mengapa?",
+            "opsi": [
+              "Karena batu lebih berat",
+              "Karena hambatan udara sangat kecil pada keduanya",
+              "Karena kertas lebih ringan",
+              "Karena lantainya datar"
+            ],
+            "kunci": 1
+          },
+          "tier2": {
+            "teks": "Alasan jawaban Anda:",
+            "opsi": [
+              "Percepatan gravitasi tidak bergantung pada massa",
+              "Benda berat menarik benda ringan",
+              "Kertas yang diremas menjadi lebih berat",
+              "Meja memberi dorongan yang sama"
+            ],
+            "kunci": 0,
+            "feedback": [
+              "",
+              "Gaya tarik antar benda kecil itu sangat lemah dan tidak berpengaruh.",
+              "Meremas kertas tidak mengubah massanya.",
+              "Meja tidak mendorong benda yang jatuh."
+            ]
+          },
+          "pembahasan": "Dengan hambatan udara yang kecil, kedua benda mengalami percepatan g yang sama sehingga waktu jatuhnya hampir sama."
+        },
+        {
+          "id": "B2",
+          "konsep": "Gaya gesek",
+          "tier1": {
+            "teks": "Mengapa ban sepeda dibuat beralur (bergerigi)?",
+            "opsi": [
+              "Agar ban lebih ringan",
+              "Agar gaya gesek dengan jalan lebih besar",
+              "Agar ban lebih cepat aus",
+              "Agar ban terlihat menarik"
+            ],
+            "kunci": 1
+          },
+          "tier2": {
+            "teks": "Alasan jawaban Anda:",
+            "opsi": [
+              "Alur memperbesar cengkeraman sehingga sepeda tidak mudah tergelincir",
+              "Alur mengurangi gesekan agar sepeda lebih cepat",
+              "Alur membuat ban lebih empuk",
+              "Alur menyimpan udara"
+            ],
+            "kunci": 0,
+            "feedback": [
+              "",
+              "Justru gesekan diperbesar agar tidak tergelincir.",
+              "Kenyamanan bukan fungsi utama alur ban.",
+              "Udara disimpan di dalam ban, bukan di alurnya."
+            ]
+          },
+          "pembahasan": "Alur ban memperbesar gaya gesek antara ban dan jalan sehingga sepeda tidak mudah tergelincir, terutama di jalan basah."
+        },
+        {
+          "id": "B3",
+          "konsep": "Bidang miring",
+          "tier1": {
+            "teks": "Jalan menuju puncak gunung dibuat berkelok-kelok. Apa keuntungannya bagi kendaraan?",
+            "opsi": [
+              "Jarak tempuh lebih pendek",
+              "Gaya yang dibutuhkan untuk menanjak lebih kecil",
+              "Kendaraan lebih cepat sampai",
+              "Bahan bakar tidak diperlukan"
+            ],
+            "kunci": 1
+          },
+          "tier2": {
+            "teks": "Alasan jawaban Anda:",
+            "opsi": [
+              "Jalan berkelok berfungsi sebagai bidang miring yang panjang",
+              "Jalan berkelok mengurangi berat kendaraan",
+              "Jalan berkelok membuat gravitasi lebih kecil",
+              "Jalan berkelok mengurangi ketinggian gunung"
+            ],
+            "kunci": 0,
+            "feedback": [
+              "",
+              "Berat kendaraan tidak berubah.",
+              "Gravitasi tidak berubah.",
+              "Ketinggian yang dicapai tetap sama."
+            ]
+          },
+          "pembahasan": "Jalan berkelok memperpanjang lintasan (s) untuk ketinggian (h) yang sama sehingga gaya yang dibutuhkan lebih kecil."
+        },
+        {
+          "id": "B4",
+          "konsep": "Perpindahan kalor",
+          "tier1": {
+            "teks": "Pada siang hari angin bertiup dari laut ke darat. Peristiwa ini terjadi karena perpindahan kalor secara ...",
+            "opsi": [
+              "Konduksi",
+              "Konveksi",
+              "Radiasi",
+              "Isolasi"
+            ],
+            "kunci": 1
+          },
+          "tier2": {
+            "teks": "Alasan jawaban Anda:",
+            "opsi": [
+              "Udara di atas darat lebih cepat panas, naik, lalu digantikan udara dari laut",
+              "Laut memancarkan panas ke darat",
+              "Darat dan laut bersentuhan langsung",
+              "Udara laut lebih ringan"
+            ],
+            "kunci": 0,
+            "feedback": [
+              "",
+              "Pemancaran panas bukan penyebab aliran angin.",
+              "Sentuhan langsung adalah konduksi, bukan penyebab angin.",
+              "Udara laut yang lebih dingin justru lebih berat."
+            ]
+          },
+          "pembahasan": "Darat lebih cepat panas daripada laut. Udara panas di atas darat naik dan digantikan udara dingin dari laut: ini konveksi."
+        },
+        {
+          "id": "B5",
+          "konsep": "Rangkaian listrik",
+          "tier1": {
+            "teks": "Lampu di rumah dipasang paralel. Jika satu lampu di kamar padam karena rusak, lampu di ruang lain ...",
+            "opsi": [
+              "Ikut padam",
+              "Tetap menyala",
+              "Menyala lebih redup",
+              "Berkedip-kedip"
+            ],
+            "kunci": 1
+          },
+          "tier2": {
+            "teks": "Alasan jawaban Anda:",
+            "opsi": [
+              "Setiap lampu memiliki jalur arus sendiri",
+              "Arus hanya mengalir ke lampu yang paling dekat",
+              "Lampu paralel tidak membutuhkan arus",
+              "Sakelar utama mati"
+            ],
+            "kunci": 0,
+            "feedback": [
+              "",
+              "Arus mengalir ke semua cabang, bukan hanya yang terdekat.",
+              "Semua lampu membutuhkan arus.",
+              "Sakelar utama tidak terpengaruh oleh satu lampu rusak."
+            ]
+          },
+          "pembahasan": "Pada rangkaian paralel setiap lampu memiliki cabang sendiri; jika satu cabang putus, cabang lain tetap dialiri arus."
+        }
+      ]
+    }
+  ]
+}
