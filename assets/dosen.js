@@ -273,7 +273,7 @@
       daftar.length ? h("div.kartu.gulir", h("table.data", h("thead", h("tr", h("th", "Nama"), h("th", "Kode"), h("th", "Kelas"), h("th", "Jadwal"), h("th", "Status"), h("th", ""))),
         h("tbody", daftar.map(s => h("tr", h("td", h("strong", s.nama), h("div.kecil.redup", s.bank_soal ? s.bank_soal.materi : "")), h("td", h("code", s.kode)), h("td", s.kelas ? s.kelas.nama : ""),
           h("td.kecil", tanggalJam(new Date(s.buka_at).getTime()), h("br"), "s.d. " + tanggalJam(new Date(s.tutup_at).getTime()), h("br"), s.durasi_menit + " menit"),
-          h("td", lencanaSesi(s.status)), h("td", h("button.kecil", { onclick: () => location.hash = "sesi/" + s.id }, "Buka"))))))) :
+          h("td", lencanaSesi(s.status)), h("td", h("button.kecil.utama", { onclick: () => location.hash = "sesi/" + s.id }, s.status === "ditutup" ? "Lihat hasil" : "Kelola / mulai"))))))) :
         h("div.kartu.kosong", h("p", "Belum ada sesi ujian."), h("p.kecil", "Urutan persiapan: 1) unggah bank soal, 2) buat kelas & PIN peserta, 3) buat sesi.")));
   }
 
@@ -311,21 +311,23 @@
         h("div", h("label", { for: "fb1" }, "Umpan balik saat selesai"), pil("fb1", [[1, "1 · Nilai saja"], [2, "2 · Nilai + profil konsep"], [3, "3 · + hasil per soal"], [4, "4 · + kunci & pembahasan"]], 2)),
         h("div", h("label", { for: "fb2" }, "Umpan balik setelah sesi ditutup"), pil("fb2", [[1, "1 · Nilai saja"], [2, "2 · Nilai + profil konsep"], [3, "3 · + hasil per soal"], [4, "4 · + kunci & pembahasan"]], 4))),
       h("p.kecil.redup.mt", "Mode serentak: waktu semua peserta dihitung sejak Anda menekan Mulai. Mode per orang: waktu tiap peserta dihitung sejak ia menekan Mulai. Ujian selalu berhenti paling lambat pada jam tutup."),
-      h("div.baris.akhir.mt", h("button", { onclick: () => location.hash = "sesi" }, "Batal"), h("button.utama", { onclick: aman(simpan) }, "Simpan sebagai draf")));
+      h("div.baris.akhir.mt", h("button", { onclick: () => location.hash = "sesi" }, "Batal"), h("button", { onclick: aman(() => simpan(false)) }, "Simpan sebagai draf"), h("button.hijau", { onclick: aman(() => simpan(true)) }, "Simpan & buka ujian sekarang")));
     f.bank.addEventListener("change", isiPaket);
     isiPaket();
-    async function simpan() {
+    async function simpan(bukaSekarang) {
       const paket = [...kotakPaket.querySelectorAll(".cekPaket:checked")].map(x => x.value);
       if (!f.nama.value.trim()) throw new Error("Nama sesi wajib diisi.");
       if (!paket.length) throw new Error("Pilih minimal satu paket.");
-      const buka = new Date(f.buka.value), tutup = new Date(f.tutup.value);
+      let buka = new Date(f.buka.value); const tutup = new Date(f.tutup.value);
+      if (bukaSekarang && buka > new Date()) buka = new Date();
       if (!(tutup > buka)) throw new Error("Jam tutup harus setelah jam buka.");
       const dur = parseInt(f.durasi.value, 10);
       if ((tutup - buka) / 60000 < dur) toast("Catatan: rentang buka–tutup lebih pendek dari durasi; ujian akan berhenti di jam tutup.");
       const r = await q(sb.from("sesi_ujian").insert({ nama: f.nama.value.trim(), bank_soal_id: f.bank.value, kelas_id: f.kelas.value, paket,
         buka_at: buka.toISOString(), tutup_at: tutup.toISOString(), durasi_menit: dur, ambang: parseInt(f.ambang.value, 10),
-        navigasi: f.nav.value, mode_mulai: f.mode.value, aturan_skor: f.aturan.value, fb_langsung: +f.fb1.value, fb_tutup: +f.fb2.value }).select("id").single());
-      toast("Sesi dibuat. Lakukan uji coba, lalu aktifkan.", "sukses");
+        navigasi: f.nav.value, mode_mulai: f.mode.value, aturan_skor: f.aturan.value, fb_langsung: +f.fb1.value, fb_tutup: +f.fb2.value,
+        status: bukaSekarang ? "aktif" : "draf" }).select("id").single());
+      toast(bukaSekarang ? "Ujian dibuka. Bagikan kode, izinkan peserta, lalu tekan Mulai ujian sekarang." : "Sesi disimpan sebagai draf.", "sukses");
       location.hash = "sesi/" + r.id;
     }
     bingkai("sesi", h("p", h("a", { href: "#sesi" }, "← Sesi ujian")), h("div.kartu", h("h2", "Buat sesi ujian"), form));
@@ -348,14 +350,29 @@
         const t = await rpc("dosen_uji_coba", { p_sesi: id });
         window.open("ujian.html?uji=" + t, "_blank");
       }) }, "Uji coba sebagai mahasiswa"));
-      if (s.status === "draf") tombol.push(h("button.hijau", { onclick: aman(async () => {
-        await q(sb.from("sesi_ujian").update({ status: "aktif" }).eq("id", id)); s.status = "aktif"; toast("Sesi aktif. Mahasiswa bisa masuk sesuai jadwal.", "sukses"); gambarKepala();
-      }) }, "Aktifkan sesi"));
-      if (s.status === "aktif" && s.mode_mulai === "serentak" && !s.dimulai_at) tombol.push(h("button.hijau", { onclick: aman(async () => {
-        const n = terakhir ? terakhir.peserta.filter(p => p.status === "diizinkan").length : 0;
-        if (!(await yakin("Mulai ujian sekarang?", "Waktu " + s.durasi_menit + " menit mulai berjalan untuk semua peserta. " + n + " peserta sudah diizinkan; yang diizinkan belakangan tetap mengikuti jam yang sama.", "Mulai"))) return;
-        await rpc("dosen_mulai", { p_sesi: id }); s.dimulai_at = new Date().toISOString(); toast("Ujian dimulai.", "sukses"); gambarKepala(); muat();
-      }) }, "▶ Mulai ujian serentak"));
+      // jadikan sesi aktif dan pastikan jam buka tidak di masa depan
+      async function bukaSesi() {
+        const upd = { status: "aktif" };
+        if (new Date(s.buka_at) > new Date()) upd.buka_at = new Date().toISOString();
+        await q(sb.from("sesi_ujian").update(upd).eq("id", id));
+        Object.assign(s, upd);
+      }
+      const belumMulai = s.status !== "ditutup" && !(s.status === "aktif" && (s.mode_mulai === "per_orang" || s.dimulai_at));
+      if (s.status === "draf") tombol.push(h("button", { onclick: aman(async () => {
+        await bukaSesi(); toast("Ujian dibuka. Mahasiswa bisa masuk ke ruang tunggu.", "sukses"); gambarKepala(); muat();
+      }) }, "Buka ruang tunggu (belum mulai)"));
+      if (belumMulai) tombol.push(h("button.hijau", { style: { fontSize: "1.05rem", padding: "10px 20px" }, onclick: aman(async () => {
+        const n = terakhir ? terakhir.peserta.filter(p => p.status === "diizinkan" && !p.uji).length : 0;
+        const tunggu = terakhir ? terakhir.peserta.filter(p => p.status === "menunggu").length : 0;
+        const sisaMenit = (new Date(s.tutup_at) - new Date()) / 60000;
+        const pesan = s.mode_mulai === "serentak"
+          ? "Waktu " + s.durasi_menit + " menit mulai berjalan sekarang untuk semua peserta. Sudah diizinkan: " + n + " orang" + (tunggu ? ", masih menunggu izin: " + tunggu + " orang (bisa diizinkan sesudahnya, waktunya mengikuti jam yang sama)." : ".")
+          : "Sesi dibuka. Pada mode per orang, waktu setiap mahasiswa dihitung sejak ia menekan Mulai setelah Anda izinkan.";
+        if (!(await yakin("Mulai ujian sekarang?", pesan + (sisaMenit < s.durasi_menit ? " Perhatian: jam tutup tinggal " + Math.max(0, Math.round(sisaMenit)) + " menit, lebih pendek dari durasi." : ""), "▶ Mulai sekarang"))) return;
+        if (s.status === "draf" || new Date(s.buka_at) > new Date()) await bukaSesi();
+        if (s.mode_mulai === "serentak") { await rpc("dosen_mulai", { p_sesi: id }); s.dimulai_at = new Date().toISOString(); }
+        toast("Ujian dimulai.", "sukses"); subTab = "izin"; gambarKepala(); gambarTab(); muat();
+      }) }, "▶ Mulai ujian sekarang"));
       if (s.status === "aktif") tombol.push(h("button.bahaya", { onclick: aman(async () => {
         if (!(await yakin("Tutup sesi?", "Semua ujian yang masih berjalan dikirim dan dinilai sekarang. Mahasiswa tidak bisa masuk lagi. Umpan balik tingkat 'setelah ditutup' menjadi terlihat.", "Tutup sesi", "bahaya"))) return;
         await rpc("dosen_tutup", { p_sesi: id }); s.status = "ditutup"; toast("Sesi ditutup.", "sukses"); gambarKepala(); muat();
@@ -373,7 +390,16 @@
             s.dimulai_at ? "Dimulai pukul " + jam(new Date(s.dimulai_at).getTime()) : "", h("br"),
             "Tautan mahasiswa: ", h("a", { href: linkMhs, target: "_blank" }, linkMhs), " ", h("button.kecil", { onclick: () => { navigator.clipboard && navigator.clipboard.writeText(linkMhs); toast("Tautan disalin."); } }, "Salin"))),
         h("div.baris.mt", tombol),
-        s.status === "draf" ? h("p.kecil.redup.mt", "Langkah: uji coba dulu sebagai mahasiswa (tidak masuk rekap), periksa soal dan gambar, lalu tekan Aktifkan sesi.") : null));
+        langkah()));
+    }
+    function langkah() {
+      const mulai = s.mode_mulai === "per_orang" ? s.status !== "draf" : !!s.dimulai_at;
+      const L = [["Uji coba (opsional)", s.status !== "draf"], ["Buka ruang tunggu", s.status !== "draf"], ["Izinkan peserta", mulai], ["Mulai ujian", mulai], ["Tutup sesi", s.status === "ditutup"]];
+      const kini = L.findIndex(x => !x[1]);
+      return h("div.mt.kecil", { style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
+        L.map(([t, ok], i) => [i ? h("span.redup", "→") : null,
+          h("span", { class: "lencana " + (ok ? "hijau" : i === kini ? "biru" : "") }, (ok ? "✓ " : (i + 1) + ". ") + t)]),
+        s.mode_mulai === "per_orang" && s.status === "aktif" ? h("span.redup", " · Mode per orang: mahasiswa mulai sendiri setelah diizinkan.") : null);
     }
 
     const tabNav = h("nav.tab-nav");
@@ -424,7 +450,7 @@
               return h("tr", h("td", cb), h("td", p.nim), h("td", p.nama, p.ganda ? h("div", h("span.lencana.merah", "Masuk ulang / perangkat baru")) : null), h("td.kecil", p.perangkat || "-"), h("td", infoCek(p)), h("td.kecil", jam(p.masuk_at)),
                 h("td.baris", h("button.kecil.hijau", { onclick: () => izinkan([p.id]) }, "Izinkan"), h("button.kecil", { onclick: aman(async () => { await rpc("dosen_tolak", { p_attempt: p.id }); muat(); }) }, "Tolak")));
             })))) : h("p.kosong", "Tidak ada peserta yang menunggu. Halaman diperbarui otomatis tiap 10 detik.")),
-        s.mode_mulai === "serentak" && !s.dimulai_at && s.status === "aktif" ? h("div.kartu.peringatan", "Peserta yang sudah diizinkan menunggu Anda menekan ", h("strong", "▶ Mulai ujian serentak"), " di atas.") : null);
+        ...(s.mode_mulai === "serentak" && !s.dimulai_at && s.status !== "ditutup" ? [h("div.kartu.peringatan", "Peserta yang sudah diizinkan menunggu Anda menekan ", h("strong", "▶ Mulai ujian sekarang"), " di atas.")] : []));
     }
 
     function tabPantau() {
