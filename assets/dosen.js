@@ -228,7 +228,26 @@
     fIn.addEventListener("change", aman(async () => { const f = fIn.files[0]; if (f) await tambah(X.bacaPeserta(await f.arrayBuffer())); fIn.value = ""; }));
     bingkai("kelas",
       h("p", h("a", { href: "#kelas" }, "← Kelas")),
-      h("div.kartu", h("h2", k.nama), h("p.redup", ps.length + " peserta")),
+      h("div.kartu", h("h2", k.nama), h("p.redup", ps.length + " peserta"),
+        h("div.baris",
+          h("button.kecil", { onclick: aman(async () => {
+            const baru = prompt("Nama kelas yang baru:", k.nama);
+            if (!baru || !baru.trim() || baru.trim() === k.nama) return;
+            await q(sb.from("kelas").update({ nama: baru.trim() }).eq("id", id));
+            toast("Nama kelas diperbarui.", "sukses"); rute();
+          }) }, "Ganti nama kelas"),
+          h("button.kecil.bahaya", { onclick: aman(async () => {
+            const dipakai = await q(sb.from("sesi_ujian").select("nama, status").eq("kelas_id", id));
+            if (dipakai.length) {
+              return modal("Kelas tidak dapat dihapus", [
+                h("p", "Kelas ini masih dipakai oleh " + dipakai.length + " sesi ujian:"),
+                h("ul", dipakai.map(s => h("li", s.nama + " (" + s.status + ")"))),
+                h("p.kecil.redup", "Sesi berstatus draf dapat dihapus dulu di menu Sesi ujian. Sesi yang sudah aktif atau ditutup menyimpan nilai mahasiswa, sehingga kelasnya dikunci agar data nilai tidak hilang. Bila hanya ada kesalahan nama atau NIM, gunakan Ganti nama kelas atau perbaiki peserta satu per satu.")]);
+            }
+            if (!(await yakin("Hapus kelas " + k.nama + "?", "Kelas beserta " + ps.length + " peserta dan PIN-nya akan dihapus permanen. Tindakan ini tidak dapat dibatalkan.", "Hapus kelas", "bahaya"))) return;
+            await q(sb.from("kelas").delete().eq("id", id));
+            toast("Kelas dihapus.", "sukses"); location.hash = "kelas";
+          }) }, "Hapus kelas"))),
       h("div.kartu", h("h3", "Tambah peserta"), h("p.redup.kecil", "Tempel dari Excel/SIAKAD atau unggah file Excel berkolom NIM dan Nama. NIM yang sudah ada akan diperbarui namanya dan dibuatkan PIN baru."),
         tempel, h("div.baris.mt", h("button.utama", { onclick: aman(async () => {
           const data = tempel.value.split(/\r?\n/).map(l => l.trim()).filter(Boolean).map(l => { const m = l.split(/\t|;|,/); return { nim: (m[0] || "").trim(), nama: m.slice(1).join(" ").trim() }; }).filter(x => x.nim && x.nama);
