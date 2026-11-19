@@ -6,7 +6,7 @@
 // JANGAN pernah menaruh "service_role" / "secret" key di file ini.
 // =====================================================================
 window.CBT_CONFIG = {
-  SUPABASE_URL: "https://qnsyxbjufeqwywbmqyls.supabase.co/rest/v1/",
+  SUPABASE_URL: "https://qnsyxbjufeqwywbmqyls.supabase.co",
   SUPABASE_ANON_KEY: "sb_publishable_hQsbnVNncPuMyPOtaXGTlg_6522KHFg",
 
   // Nama institusi yang tampil di kepala halaman.
